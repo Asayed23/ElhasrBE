@@ -7,7 +7,7 @@ from .serializers import CategorySerializer, ServiceSerializer, ServiceAttribute
 
 
 # API EndPoint For view all categories from database
-@api_view(['GET'])
+@api_view(['POST'])
 def CategoryList(request):
     # Get All Data from database
     categories = Category.objects.all()
@@ -18,7 +18,7 @@ def CategoryList(request):
 
 
 # API EndPoint For View the details of one category
-@api_view(['GET'])
+@api_view(['POST'])
 def CategoryDetails(request):
     # Get the wanted category from database based on given id
     services = Service.objects.filter(category__id= request.data['id'])
@@ -30,7 +30,7 @@ def CategoryDetails(request):
 
 
 # API EndPoint For view all services from database
-@api_view(['GET'])
+@api_view(['POST'])
 def ServiceList(request):
     # Get All Data from database
     services = ServiceVariant.objects.all()
@@ -41,7 +41,7 @@ def ServiceList(request):
 
 
 # API EndPoint For View the details of one Service
-@api_view(['GET'])
+@api_view(['POST'])
 def ServiceDetails(request):
     # Get the wanted Service from database based on given id
     service = ServiceVariant.objects.filter(id= request.data['id']).first()
