@@ -64,7 +64,7 @@ class ServiceVariant(models.Model):
     This model holds the values for price and combination of attributes
     """
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    variant = models.ManyToManyField(ServiceAttribute)
+    variant = models.ForeignKey(ServiceAttribute,on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=25, decimal_places=2)
 
     class Meta:
