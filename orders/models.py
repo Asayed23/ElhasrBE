@@ -1,4 +1,6 @@
 from django.db import models
+from decimal import Decimal
+from django.db.models import F, Sum
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.dispatch import receiver
@@ -23,6 +25,8 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
 
 @receiver(post_save, sender=User)
 def create_user_cart(sender, created, instance, *args, **kwargs):

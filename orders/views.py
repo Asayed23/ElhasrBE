@@ -13,24 +13,34 @@ from .models import Cart, CartItem
 
 @api_view(['POST'])
 def ListCartItems(request):
-    user = request.user
+    # user = request.user
+    user = request.data['user_id']
     cart_items = CartItem.objects.filter(cart__user=user)
-    serializer = CartItemSerializer(cart_items, many=True)
-    return Response(serializer.data)
+    cart = Cart.objects.get(user = user)
+    cart_item_serializer = CartItemSerializer(cart_items, many=True)
+    cart_serializer = CartSerializer(cart)
+    context = {
+        'cart items': cart_item_serializer.data,
+        'cart': cart_serializer.data
+    }
+    return Response(context)
 
 
 @api_view(['POST'])
-@permission_classes([permissions.IsAuthenticated])
-def CartListOrCreate(request):
-    user = request.user
+# @permission_classes([permissions.IsAuthenticated])
+def CartView(request):
+    # user = request.user
+    user = request.data['user_id']
     cart = Cart.objects.get(user=user)
     serializer = CartSerializer(cart)
     return Response(serializer.data)
 
 
 @api_view(['POST'])
-def AddToCart(request, pk):
-    user = request.user
+def AddToCart(request):
+    # user = request.user
+    user = request.data['user_id']
+    pk = request.data['pk']
     cart = Cart.objects.get(user=user)
     service = ServiceVariant.objects.get(id=pk)
     quantity = 1
@@ -38,7 +48,7 @@ def AddToCart(request, pk):
     cart_item.save()
     serializer = CartSerializer(cart)
     total = float(service.price) * float(quantity)
-    cart.total_price += Decimal(total)
+    cart.total_price += total
     cart.save()
 
     return Response(serializer.data)
@@ -65,16 +75,21 @@ def AddToCart(request, pk):
 #     return Response(serializer.data)
 
 
-@api_view(['DELETE'])
-def CartItemDelete(request, pk):
+@api_view(['POST'])
+def CartItemDelete(request):
+    pk = request.data['pk']
+    user = request.data['user_id']
     item = CartItem.objects.get(id=pk)
+    cart = Cart.objects.get(user= user)
     item.delete()
+    cart.total_price -= float(item.item.price)
+    cart.save()
     return Response('Item Deleted Succesfully')
 
 
-@api_view(['POST'])
-def CartView(request):
-    user = request.user
-    cart = Cart.objects.get(user=user)
-    serializer = CartSerializer(cart)
-    return Response(serializer.data)
+# @api_view(['POST'])
+# def CartView(request):
+#     user = request.user
+#     cart = Cart.objects.get(user=user)
+#     serializer = CartSerializer(cart)
+#     return Response(serializer.data)

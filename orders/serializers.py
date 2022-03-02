@@ -11,12 +11,13 @@ class CartSerializer(serializers.ModelSerializer):
             'id',
             'user',
             'total_price',
-            'date_created'
+            'date_created',
         )
 
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
+        model = CartItem
         fields = (
             'id',
             'item',
