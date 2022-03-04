@@ -40,9 +40,9 @@ def CartView(request):
 def AddToCart(request):
     # user = request.user
     user = request.data['user_id']
-    pk = request.data['pk']
+    service_id = request.data['service_id']
     cart = Cart.objects.get(user=user)
-    service = ServiceVariant.objects.get(id=pk)
+    service = ServiceVariant.objects.get(service__id=service_id)
     quantity = 1
     cart_item = CartItem(cart=cart, item=service)
     cart_item.save()
@@ -77,19 +77,14 @@ def AddToCart(request):
 
 @api_view(['POST'])
 def CartItemDelete(request):
-    pk = request.data['pk']
+    cartitem_id = request.data['cartitem_id']
     user = request.data['user_id']
-    item = CartItem.objects.get(id=pk)
+    item = CartItem.objects.get(id=cartitem_id)
     cart = Cart.objects.get(user= user)
     item.delete()
+    serializer = CartSerializer(cart)
     cart.total_price -= float(item.item.price)
     cart.save()
-    return Response('Item Deleted Succesfully')
+    return Response(serializer.data)
 
 
-# @api_view(['POST'])
-# def CartView(request):
-#     user = request.user
-#     cart = Cart.objects.get(user=user)
-#     serializer = CartSerializer(cart)
-#     return Response(serializer.data)
