@@ -39,7 +39,7 @@ def CategoryDetails(request):
     serializer = ServiceSerializer(services, many=True)
     context = [
         {
-        'service_id' : service['id'],
+        'service_id' : ServiceVariant.objects.get(service__id = service['id'], variant__attr_name = str(size)).id,
         'name': service['name'],
         'description':service['description'],
         'category': service['category'],

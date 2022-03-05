@@ -42,7 +42,7 @@ def AddToCart(request):
     user = request.data['user_id']
     service_id = request.data['service_id']
     cart = Cart.objects.get(user=user)
-    service = ServiceVariant.objects.get(service__id=service_id)
+    service = ServiceVariant.objects.get(id=service_id)
     quantity = 1
     cart_item = CartItem(cart=cart, item=service)
     cart_item.save()
