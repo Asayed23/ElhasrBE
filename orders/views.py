@@ -50,8 +50,15 @@ def AddToCart(request):
     total = float(service.price) * float(quantity)
     cart.total_price += total
     cart.save()
-
-    return Response(serializer.data)
+    cart_items = CartItem.objects.filter(cart__user=user)
+    cart_item_serializer = CartItemSerializer(cart_items, many=True)
+    cart_serializer = CartSerializer(cart)
+    context = {
+        'cart items': cart_item_serializer.data,
+        'cart': cart_serializer.data
+    }
+    return Response(context)
+    # return Response(serializer.data)
 
 
 # @api_view(['POST'])
@@ -77,14 +84,22 @@ def AddToCart(request):
 
 @api_view(['POST'])
 def CartItemDelete(request):
-    cartitem_id = request.data['cartitem_id']
+    service_id = request.data['service_id']
     user = request.data['user_id']
-    item = CartItem.objects.get(id=cartitem_id)
+    item = CartItem.objects.get(item=service_id)
     cart = Cart.objects.get(user= user)
     item.delete()
     serializer = CartSerializer(cart)
     cart.total_price -= float(item.item.price)
     cart.save()
-    return Response(serializer.data)
+    cart_items = CartItem.objects.filter(cart__user=user)
+    cart_item_serializer = CartItemSerializer(cart_items, many=True)
+    cart_serializer = CartSerializer(cart)
+    context = {
+        'cart items': cart_item_serializer.data,
+        'cart': cart_serializer.data
+    }
+    return Response(context)
+    # return Response(serializer.data)
 
 
