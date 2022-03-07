@@ -44,6 +44,8 @@ def AddToCart(request):
     cart = Cart.objects.get(user=user)
     service = ServiceVariant.objects.get(id=service_id)
     quantity = 1
+    if CartItem.objects.filter(cart=cart, item=service).exists():
+      return Response({'message':"item already added"})  
     cart_item = CartItem(cart=cart, item=service)
     cart_item.save()
     serializer = CartSerializer(cart)
