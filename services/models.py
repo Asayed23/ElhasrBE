@@ -57,7 +57,7 @@ class ServiceAttribute(models.Model):
 
     def __str__(self):
         return self.service.name + " " + self.attr_name
-
+ 
 
 class ServiceVariant(models.Model):
     """

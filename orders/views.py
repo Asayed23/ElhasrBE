@@ -15,12 +15,14 @@ from .models import Cart, CartItem
 def ListCartItems(request):
     # user = request.user
     user = request.data['user_id']
-    cart_items = CartItem.objects.filter(cart__user=user)
+    cart_items = CartItem.objects.filter(cart__user=user).values('item',
+                'item__service__name','item__service__category',
+                'item__service__description','item__service__image','item__price')
     cart = Cart.objects.get(user = user)
-    cart_item_serializer = CartItemSerializer(cart_items, many=True)
+    # cart_item_serializer = CartItemSerializer(cart_items, many=True)
     cart_serializer = CartSerializer(cart)
     context = {
-        'cart items': cart_item_serializer.data,
+        'cart items': cart_items,
         'cart': cart_serializer.data
     }
     return Response(context)

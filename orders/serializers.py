@@ -1,7 +1,7 @@
 from dataclasses import fields
 from rest_framework import serializers
 from .models import Cart, CartItem
-from services.models import ServiceVariant
+from services.models import ServiceVariant,Category
 
 
 class CartSerializer(serializers.ModelSerializer):
@@ -20,6 +20,17 @@ class CartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = (
             'id',
-            'item',
+            'item__service',
             'cart'
+        )
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name', 
+            'image', 
+            'description'
         )
