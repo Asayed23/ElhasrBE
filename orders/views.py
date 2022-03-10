@@ -90,8 +90,9 @@ def AddToCart(request):
 def CartItemDelete(request):
     service_id = request.data['service_id']
     user = request.data['user_id']
-    item = CartItem.objects.get(item=service_id)
     cart = Cart.objects.get(user= user)
+    item = CartItem.objects.get(item=service_id,cart=cart)
+    # cart = Cart.objects.get(user= user)
     item.delete()
     serializer = CartSerializer(cart)
     cart.total_price -= float(item.item.price)
