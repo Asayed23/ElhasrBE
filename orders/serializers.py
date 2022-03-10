@@ -20,7 +20,7 @@ class CartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = (
             'id',
-            'item__service',
+            'item',
             'cart'
         )
 
