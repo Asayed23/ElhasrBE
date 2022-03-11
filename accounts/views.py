@@ -248,20 +248,17 @@ class restpassapi(generics.GenericAPIView):
 
 
 
-class showprofileApi(APIView):
+class numbercheckApi(APIView):
     # permission_classes = ()  # <-- And here
 
 
     def post(self, request, *args, **kwargs):
         
-    
-        
-        userId=request.data["userId"]
-        user=get_object_or_404(User, id=userId)
-        userProfile_response=UserProfile.objects.get(user=user)
-        if userProfile_response.profileBalance==0:
-            return Response({"status":False,"message":"user doesn't have show off balance","data":userProfile_response.profileBalance})
+        if UserProfile.objects.filter(
+
+                phoneNumber=request.data['phoneNumber']).exists():
+
+            return Response({"Date": "phone number exist"})
         else:
-            userProfile_response.profileBalance=userProfile_response.profileBalance-1
-            userProfile_response.save()
-            return Response({"status":True,"message":"success","data":userProfile_response.profileBalance})
+            return Response({"Date": "phone number not exist"})
+ 
