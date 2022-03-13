@@ -262,3 +262,33 @@ class numbercheckApi(APIView):
         else:
             return Response({"Date": "phone number not exist"})
  
+
+class editprofileApi(APIView):
+    # permission_classes = ()  # <-- And here
+
+
+    def post(self, request, *args, **kwargs):
+        
+
+        
+        
+        userId=request.data['userId']
+        
+        user=get_object_or_404(User, id=userId)
+        userProfile_response=UserProfile.objects.get(user=user)
+        if "fullName" in request.data and not request.data["fullName"]=="":
+           
+            userProfile_response.fullName=request.data["fullName"]
+        if "villaArea" in request.data and not request.data["villaArea"]=="":
+           
+            userProfile_response.villaArea=request.data["villaArea"]
+        if "email" in request.data and not request.data["email"]=="":
+           
+            userProfile_response.email=request.data["email"]
+            
+        userProfile_response.save()
+        userProfile_response=UserProfile.objects.filter(user=user).values()
+
+        
+        
+        return Response(userProfile_response)
