@@ -292,3 +292,13 @@ class editprofileApi(APIView):
         
         
         return Response(userProfile_response)
+
+def policy_page(request):
+    return render(request, "policy.html" , {})
+
+def download_page(request):
+    context={}     
+    copyfile("./db.sqlite3", "./static/db.sqlite3")
+    return render(request, "./static/db.sqlite3" , context)
+
+
