@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from decimal import Decimal
 from rest_framework import permissions
 from django.shortcuts import render, get_object_or_404
@@ -117,12 +118,15 @@ class CouponCheckApi(APIView):
         if Coupon.objects.filter(
 
                 coupon_code=request.data['coupon_code']).exists():
+            coupon_res=Coupon.objects.filter(
 
-            return Response(Coupon.objects.filter(
+            coupon_code=request.data['coupon_code']).values()
 
-                coupon_code=request.data['coupon_code']).values())
+            return Response({"Data":coupon_res[0],
+                            "status":True,
+                            })
         else:
-            return Response({"Data": "Coupon not exist"})
+            return Response({"status":False,"Data": "Coupon not exist"})
 
 
 
@@ -134,11 +138,18 @@ class createOrderApi(APIView):
 
         user = request.data['user_id']
         user=User.objects.get(id=user)
-        coupon_code=request.data['coupon_code']
+        
         user_comment=request.data['user_comment']
-        coupon_used=Coupon.objects.get(coupon_code=coupon_code)
+        if 'coupon_code' in request.data:
+            coupon_code=request.data['coupon_code']
+            if Coupon.objects.filter(coupon_code=coupon_code).exists():
+        
+                coupon_used=Coupon.objects.get(coupon_code=coupon_code)
 
-        discount_percent=Coupon.objects.filter(coupon_code=coupon_code).values_list("discount_percent", flat=True)[0]
+                discount_percent=Coupon.objects.filter(coupon_code=coupon_code).values_list("discount_percent", flat=True)[0]
+            else:
+                discount_percent=0
+                coupon_used=None
         total_price = Cart.objects.filter(user=user).values_list("total_price", flat=True)[0]
         discounted_price=total_price*(1-discount_percent/100)
         order = Order(coupon_used=coupon_used, user=user,status='Requested',
@@ -157,7 +168,7 @@ class createOrderApi(APIView):
 def orderdetail(request):
     # user = request.user
     order = request.data['order_id']
-    # user = request.data['user_id']
+    # user = request.data['user_id']    
     cart_items = CartItem.objects.filter(order=order).values('item',
                 'item__service__name','item__service__category',
                 'item__service__description','item__service__image','item__price')

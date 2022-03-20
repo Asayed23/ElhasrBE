@@ -48,7 +48,7 @@ class Order(models.Model):
     This model holds the shopping Orders.
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    coupon_used =models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    coupon_used =models.ForeignKey(Coupon, on_delete=models.CASCADE,blank=True, null=True)
     final_price = models.FloatField(default=0, blank=True, null=True)
     status =models.CharField(null=True,blank=False,max_length=100)
     user_comment= models.TextField( blank=True, null=True)
