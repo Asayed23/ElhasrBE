@@ -151,18 +151,21 @@ class createOrderApi(APIView):
                 discount_percent=0
                 coupon_used=None
         total_price = Cart.objects.filter(user=user).values_list("total_price", flat=True)[0]
+
         discounted_price=total_price*(1-discount_percent/100)
         order = Order(coupon_used=coupon_used, user=user,status='Requested',
                         final_price=discounted_price,user_comment=user_comment,
                         requested_date=datetime.now()
                         )
         order.save()
-        # print(order.id)
+        print(order.id)
         cart = get_object_or_404(Cart,user= user)
 
+        cart.total_price=0
+        cart.save()
         CartItem.objects.filter(cart=cart).update(cart='',order=order)
 
-        return Response({"Data": "order updated successfully"})
+        return Response({"order number": order.id,"total price":order.final_price})
 
 @api_view(['POST'])
 def orderdetail(request):
