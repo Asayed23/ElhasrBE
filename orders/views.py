@@ -1,4 +1,4 @@
-from asyncio.windows_events import NULL
+
 from decimal import Decimal
 from rest_framework import permissions
 from django.shortcuts import render, get_object_or_404
@@ -49,7 +49,7 @@ def AddToCart(request):
     service = ServiceVariant.objects.get(id=service_id)
     quantity = 1
     if CartItem.objects.filter(cart=cart, item=service).exists():
-      return Response({'message':"item already added"})  
+      return Response({'message':"item already added"})
     cart_item = CartItem(cart=cart, item=service)
     cart_item.save()
     serializer = CartSerializer(cart)
@@ -114,7 +114,7 @@ class CouponCheckApi(APIView):
 
 
     def post(self, request, *args, **kwargs):
-        
+
         if Coupon.objects.filter(
 
                 coupon_code=request.data['coupon_code']).exists():
@@ -138,12 +138,12 @@ class createOrderApi(APIView):
 
         user = request.data['user_id']
         user=User.objects.get(id=user)
-        
+
         user_comment=request.data['user_comment']
         if 'coupon_code' in request.data:
             coupon_code=request.data['coupon_code']
             if Coupon.objects.filter(coupon_code=coupon_code).exists():
-        
+
                 coupon_used=Coupon.objects.get(coupon_code=coupon_code)
 
                 discount_percent=Coupon.objects.filter(coupon_code=coupon_code).values_list("discount_percent", flat=True)[0]
@@ -159,7 +159,7 @@ class createOrderApi(APIView):
         order.save()
         # print(order.id)
         cart = get_object_or_404(Cart,user= user)
-        
+
         CartItem.objects.filter(cart=cart).update(cart='',order=order)
 
         return Response({"Data": "order updated successfully"})
@@ -168,7 +168,7 @@ class createOrderApi(APIView):
 def orderdetail(request):
     # user = request.user
     order = request.data['order_id']
-    # user = request.data['user_id']    
+    # user = request.data['user_id']
     cart_items = CartItem.objects.filter(order=order).values('item',
                 'item__service__name','item__service__category',
                 'item__service__description','item__service__image','item__price')
