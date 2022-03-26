@@ -13,6 +13,8 @@ from django.contrib.auth.models import User
 from datetime import date,datetime
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+
 @api_view(['POST'])
 def ListCartItems(request):
     # user = request.user
@@ -223,3 +225,61 @@ def webListorders(request):
     return Response(context)
 
 
+@api_view(['Get'])
+# @login_required(redirect_field_name='/orders/web/Listorders/', login_url='/admin/')
+def webSearchorders(request):
+    query=request.data["searchWord"]
+    order = Order.objects.filter(
+        Q(id__icontains=query) |
+            Q(user_id__username__icontains=query) |
+            Q(coupon_used_id__coupon_code__icontains=query) |
+            Q(final_price__icontains=query) |
+            Q(status__icontains=query) |
+            Q(user_comment__icontains=query) |
+            Q(owner_comment__icontains=query) |
+            Q(requested_date__icontains=query) |
+            Q(modified_date__icontains=query) 
+    ).values("id",
+            "user_id__username",
+            "coupon_used_id__coupon_code",
+            "final_price",
+            "status",
+            "user_comment",
+            "owner_comment",
+            "requested_date",
+            "modified_date")
+    # if request.user.is_superuser:
+    #     order = Order.objects.all().values()
+    # else:
+    #     order = "you are n't authorized"
+    context = {
+        
+        'orders': order
+    }
+    return Response(context)
+
+
+@api_view(['Get'])
+# @login_required(redirect_field_name='/orders/web/Listorders/', login_url='/admin/')
+def webOrderDetail(request):
+    orderId=request.data["orderId"]
+    order = Order.objects.filter(
+        id=orderId
+    ).values("id",
+            "user_id__username",
+            "coupon_used_id__coupon_code",
+            "final_price",
+            "status",
+            "user_comment",
+            "owner_comment",
+            "requested_date",
+            "modified_date")
+    # if request.user.is_superuser:
+    #     order = Order.objects.all().values()
+    # else:
+    #     order = "you are n't authorized"
+    context = {
+        
+        'orders': order
+    }
+    return Response(context)
