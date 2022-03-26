@@ -11,8 +11,8 @@ from .serializers import CartSerializer, CartItemSerializer
 from .models import Cart, CartItem,Coupon, Order
 from django.contrib.auth.models import User
 from datetime import date,datetime
-
-
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 @api_view(['POST'])
 def ListCartItems(request):
     # user = request.user
@@ -198,3 +198,28 @@ def Listorders(request):
         'orders': order
     }
     return Response(context)
+
+
+@api_view(['Get'])
+# @login_required(redirect_field_name='/orders/web/Listorders/', login_url='/admin/')
+def webListorders(request):
+    order = Order.objects.all().values("id",
+            "user_id__username",
+            "coupon_used_id__coupon_code",
+            "final_price",
+            "status",
+            "user_comment",
+            "owner_comment",
+            "requested_date",
+            "modified_date")
+    # if request.user.is_superuser:
+    #     order = Order.objects.all().values()
+    # else:
+    #     order = "you are n't authorized"
+    context = {
+        
+        'orders': order
+    }
+    return Response(context)
+
+

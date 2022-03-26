@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AddToCart, CartItemDelete, ListCartItems, CartView,CouponCheckApi, createOrderApi,Listorders,orderdetail
+from .views import AddToCart, CartItemDelete, ListCartItems, CartView,CouponCheckApi, createOrderApi,Listorders,orderdetail,webListorders
 
 
 urlpatterns = [
@@ -11,7 +11,7 @@ urlpatterns = [
     path('order/createOrder/', createOrderApi.as_view(), name='createOrder'),
     path('order/orderdetail/', orderdetail, name='orderdetail'),
     path('order/Listorders/', Listorders, name='Listorders'),
-
+    path('web/Listorders/', webListorders, name='webListorders'),
 
 
 ]
