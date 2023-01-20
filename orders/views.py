@@ -160,7 +160,7 @@ class createOrderApi(APIView):
                         requested_date=datetime.now()
                         )
         order.save()
-        print(order.id)
+#        print(order.id)
         cart = get_object_or_404(Cart,user= user)
 
         cart.total_price=0
